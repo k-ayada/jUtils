@@ -69,7 +69,7 @@ public class StringUtils {
 		return  arr;
 	}
 
-	public String[] splitByLength(String string, int len, int SplitCount) {
+	public static String[] splitByLength(String string, int len, int SplitCount) {
 		if (string == null || len <= 0)
 			return null;
 
@@ -106,7 +106,7 @@ public class StringUtils {
 		StringBuilder sb = new StringBuilder();
 
 		for (T str : stringArr)
-			sb.append(String.valueOf(str) + delm);
+			sb.append(String.valueOf(str)).append(delm);
 
 		sb.setLength(sb.length() - (delm.length()));
 
@@ -129,7 +129,7 @@ public class StringUtils {
 		return sb.toString();
 	}
 
-	void splitByLengthWithWordWrap(String text, int len) {
+	public static ArrayList<String> splitByLengthWithWordWrap(String text, int len) {
 		StringTokenizer st = new StringTokenizer(text);
 		int SpaceLeft = len;
 		int SpaceWidth = 1;
@@ -162,6 +162,7 @@ public class StringUtils {
 			}
 		}
 		wrapList.add(sb.toString());
+		return wrapList;
 		// for (String s : wrapList) System.out.println(s);
 	}
 	public static String Trim(String argInStr)
