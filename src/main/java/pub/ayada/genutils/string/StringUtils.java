@@ -9,6 +9,146 @@ import java.util.StringTokenizer;
 
 public class StringUtils {
 
+	private static final char[] hexchars = { '0', '1', '2', '3', '4', '5', '6',
+			'7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+	
+	public static String fromXMLString(String s)
+	  {
+	    StringBuilder sb = new StringBuilder();
+	    for (int idx = 0; idx < s.length();)
+	    {
+	      char ch = s.charAt(idx++);
+	      if (ch == '%')
+	      {
+	        char ch1 = s.charAt(idx++);
+	        char ch2 = s.charAt(idx++);
+	        char res = (char)(h2c(ch1) * 16 + h2c(ch2));
+	        sb.append(res);
+	      }
+	      else
+	      {
+	        sb.append(ch);
+	      }
+	    }
+	    return sb.toString();
+	  }
+	public static String toXMLString(String s) {
+		if (s == null) {
+			return "";
+		}
+		StringBuilder sb = new StringBuilder();
+		for (int idx = 0; idx < s.length(); idx++) {
+			char ch = s.charAt(idx);
+			if (ch == '<') {
+				sb.append("&lt;");
+			} else if (ch == '&') {
+				sb.append("&amp;");
+			} else if (ch == '%') {
+				sb.append("%25");
+			} else if (ch < ' ') {
+				sb.append("%");
+				sb.append(hexchars[(ch / '\020')]);
+				sb.append(hexchars[(ch % '\020')]);
+			} else {
+				sb.append(ch);
+			}
+		}
+		return sb.toString();
+	}
+	private static int h2c(char ch)
+	  {
+	    if ((ch >= '0') && (ch <= '9')) {
+	      return ch - '0';
+	    }
+	    if ((ch >= 'A') && (ch <= 'F')) {
+	      return ch - 'A';
+	    }
+	    if ((ch >= 'a') && (ch <= 'f')) {
+	      return ch - 'a';
+	    }
+	    return 0;
+  	}
+	
+	public static String unEscStr(String input) {
+
+		if (input == null) {
+			return "";
+		}
+		// Needed variables
+		// preset the size so our StringBuilders don't have to grow
+		int inputlength = input.length();
+		StringBuilder unicode = new StringBuilder(4);
+		StringBuilder output = new StringBuilder(inputlength);
+		boolean hadSlash = false;
+		boolean inUnicode = false;
+
+		// The main loop
+		for (int i = 0; i < inputlength; i++) {
+			char ch = input.charAt(i);
+			// currently doing unicode mode
+			if (inUnicode) {
+				unicode.append(ch);
+				if (unicode.length() == 4) {
+					// unicode now contains the four hex digits
+					try {
+						int value = Integer.parseInt(unicode.toString(), 0x10);
+						output.append((char) value);
+						// reuse the StringBuilder
+						unicode.setLength(0);
+						inUnicode = false;
+						hadSlash = false;
+					} catch (NumberFormatException nfe) {
+						throw new RuntimeException(
+								"Unable to parse unicode value: " + unicode,
+								nfe);
+					}
+				}
+				continue;
+			}
+			if (hadSlash) {
+				// handle an escaped value
+				hadSlash = false;
+				switch (ch) {
+				case '\\':
+					output.append('\\');
+					break;
+				case '\'':
+					output.append('\'');
+					break;
+				case 'r':
+					output.append('\r');
+					break;
+				case 'f':
+					output.append('\f');
+					break;
+				case 't':
+					output.append('\t');
+					break;
+				case 'n':
+					output.append('\n');
+					break;
+				case 'b':
+					output.append('\b');
+					break;
+				case 'u': {
+					// switch to unicode mode
+					inUnicode = true;
+					break;
+				}
+				default:
+					output.append(ch);
+					break;
+				}
+				continue;
+			} else if (ch == '\\') {
+				hadSlash = true;
+				continue;
+			}
+			output.append(ch);
+		}
+
+		return output.toString();
+	}
 	public static String[] splitByLength(String string, int len) {
 		if (string == null || len <= 0)
 			return null;
