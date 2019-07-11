@@ -1,4 +1,4 @@
-package pub.ayada.commons.utils;
+package pub.ayada.genutils.net;
 
 import java.net.InetSocketAddress;
 
