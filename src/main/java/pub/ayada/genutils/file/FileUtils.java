@@ -62,6 +62,14 @@ public class FileUtils {
 		return false;
 	}
 
+	/*
+		FileUtils.getFiles("C:/fast/test/Try_pt10_*.tmp");
+		FileUtils.getFiles("/fast/test/Try_pt10_*.tmp");
+		FileUtils.getFiles("C:\\fast\\test\\Try_pt10_*.tmp");
+		FileUtils.getFiles("\\fast\\test\\Try_pt10_*.tmp");
+		FileUtils.getFiles("Try_pt0_5171166568196262341.tmp");
+	
+	*/
 	public static ArrayList<File> getFiles(String InputFilePath) throws Exception {
 		ArrayList<File> fileList = new ArrayList<File>();
 		File dir = null;
